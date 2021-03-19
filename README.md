@@ -16,8 +16,30 @@ Results are then displayed on a live dashboard to inform end users about heathin
 ### Architecture
 The entire solution is built on Alibaba Cloud International site. 
 This repository includes all source code necessary for building every components outlined in the architecture diagram.
-![img](https://jixjia-oss-singapore.oss-ap-southeast-1.aliyuncs.com/github/vehicle-anomaly-detection/architecture_animated.gif)
+
+![img](https://jixjia-oss-singapore.oss-ap-southeast-1.aliyuncs.com/github/vehicle-anomaly-detection/architecture.png)
+
+### Function Compute
+A serverless platform for generating realistic sensor telemetries and send them in streams to our message hub backed by Kafka.
+
+![img](https://jixjia-oss-singapore.oss-ap-southeast-1.aliyuncs.com/github/vehicle-anomaly-detection/demo_function_compute.gif)
+
+### MQ for Kafka
+A servie for running Kafka topics. We use it as message broker to let subscribers consume the telemtries with ease.
+
+![img](https://jixjia-oss-singapore.oss-ap-southeast-1.aliyuncs.com/github/vehicle-anomaly-detection/demo_Kafka_on_MQ.gif)
+
+### Realtime Compute (Flink)
+Famous streaming processing technology backed by Alibaba Cloud, providing a robust and easy way for processing, transforming our incoming streaming data. We also use it to call the anomaly detection model for predictive diagnosis
+
+![img](https://jixjia-oss-singapore.oss-ap-southeast-1.aliyuncs.com/github/vehicle-anomaly-detection/demo_realtime_processing_flink.gif)
+
+### Machine Learning Platform for AI 
+Alibaba Cloud's proprietary no-code/low-code service for fast prototyping an ML solution, and turn them into a REST API with single click.
+
+![img](https://jixjia-oss-singapore.oss-ap-southeast-1.aliyuncs.com/github/vehicle-anomaly-detection/demo_anomaly_detection_modelling.gif)
 
 ### Visualizations
 The live dashboard receives an update from the Hybrid Serving Analytical Processing system every 5 seconds and shows the latest status of our vehicle to end user
+
 ![img](https://jixjia-oss-singapore.oss-ap-southeast-1.aliyuncs.com/github/vehicle-anomaly-detection/demo_DataV_optimized.gif)
