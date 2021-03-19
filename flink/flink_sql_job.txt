@@ -1,0 +1,75 @@
+--Flink SQL
+--********************************************************************--
+--Author: jiajixin@test.aliyunid.com
+--CreateTime: 2021-03-18
+--********************************************************************--
+
+-- Custom UDF to call PAI-EAS model. Import "flink-paieas-udx-1.0.jar" before using
+CREATE FUNCTION InvokePAIEAS AS 'com.alibaba.blink.udx.InvokePAIEAS';
+
+-- (1) Access Kafka from VPC
+CREATE TABLE kafka_src(   
+  messageKey    VARBINARY,
+  `message`     VARBINARY,
+  topic         VARCHAR,
+  `partition`   INT,
+  `offset`      BIGINT        
+) WITH (
+  type ='kafka010',
+  topic = '',
+  `group.id` = '',
+  startupMode = 'TIMESTAMP',
+  bootstrap.servers = ''
+);
+
+
+-- (2) Read Kafka and convert binary mesage to string
+CREATE VIEW kafka_src_json_view AS 
+  SELECT CAST(`message` as VARCHAR ) as `message`
+FROM kafka_src;
+
+
+-- (3) Define sink
+CREATE TABLE hologres_sink (
+    `timestamp`     VARCHAR,
+    vin             VARCHAR,
+    lat             FLOAT,
+    long            FLOAT,
+    rpm             FLOAT,
+    coolant_temp    FLOAT,
+    vapor_pressure  FLOAT,
+    cm_voltage      FLOAT,
+    torque_percent  FLOAT,
+    oxygen_rate     FLOAT,
+    `status`        VARCHAR
+) WITH (
+	connector = 'hologres',
+	dbname = '',
+	tablename = '',
+	username = '',
+	password = '',
+	endpoint = ''
+);
+
+
+-- (4) Parse kafka message into structured data and invoke PAI-EAS model for inference
+INSERT INTO hologres_sink 
+SELECT 
+    JSON_VALUE(`message`, '$.timestamp'),
+    JSON_VALUE(`message`, '$.vin'),
+    CAST(JSON_VALUE(`message`, '$.lat') AS FLOAT),
+    CAST(JSON_VALUE(`message`, '$.long') AS FLOAT),
+    CAST(JSON_VALUE(`message`, '$.rpm') AS FLOAT),
+    CAST(JSON_VALUE(`message`, '$.coolant_temp') AS FLOAT),
+    CAST(JSON_VALUE(`message`, '$.vapor_pressure') AS FLOAT),
+    CAST(JSON_VALUE(`message`, '$.cm_voltage') AS FLOAT),
+    CAST(JSON_VALUE(`message`, '$.torque_percent') AS FLOAT),
+    CAST(JSON_VALUE(`message`, '$.oxygen_rate') AS FLOAT),
+    CAST(InvokePAIEAS(CAST(JSON_VALUE(`message`, '$.rpm') AS DOUBLE), 
+                      CAST(JSON_VALUE(`message`, '$.coolant_temp') AS DOUBLE),
+                      CAST(JSON_VALUE(`message`, '$.vapor_pressure') AS DOUBLE),
+                      CAST(JSON_VALUE(`message`, '$.cm_voltage') AS DOUBLE),
+                      CAST(JSON_VALUE(`message`, '$.torque_percent') AS DOUBLE),
+                      CAST(JSON_VALUE(`message`, '$.oxygen_rate') AS DOUBLE)
+                      ) AS VARCHAR) AS `status`
+FROM kafka_src_json_view;

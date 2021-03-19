@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.alibaba.blink</groupId>
+    <artifactId>flink-pai-eas-udx</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0</version>
+
+    <properties>
+        <scala.version>2.11.12</scala.version>
+        <scala.binary.version>2.11</scala.binary.version>
+        <blink.version>blink-3.2.2</blink.version>
+        <java.version>1.8</java.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.aliyun.openservices.eas</groupId>
+            <artifactId>eas-sdk</artifactId>
+            <version>2.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.blink</groupId>
+            <artifactId>flink-core</artifactId>
+            <version>${blink.version}</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/flink-core-blink-3.2.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.blink</groupId>
+            <artifactId>flink-streaming-java_${scala.binary.version}</artifactId>
+            <version>${blink.version}</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/flink-streaming-java_2.11-blink-3.2.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.blink</groupId>
+            <artifactId>flink-table_2.11</artifactId>
+            <version>${blink.version}</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/flink-table_2.11-blink-3.2.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.11.12</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.alibaba.blink.udx.InvokePAIEAS</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
