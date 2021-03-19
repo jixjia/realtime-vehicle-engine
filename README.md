@@ -1,7 +1,9 @@
 # Realtime Vehicle Engine Anomaly Detection
 
+&copy; 2021 Originally created by Jixin Jia for demo purpose
+
 ### About
-This repository contains entire source code for biulding a real-time predictive solution demo on Alibaba Cloud International/
+This repository contains entire source code for biulding a real-time predictive solution demo on Alibaba Cloud International.
 
 There is a video tutorial recorded in Japanese showing you how to build the solution end-to-end. 
 The tutorial is made for the Alibaba Cloud Apasara Conference Big Data Hands-On session
